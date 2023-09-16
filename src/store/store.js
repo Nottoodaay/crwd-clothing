@@ -1,10 +1,18 @@
 import { compose, createStore, applyMiddleware } from "redux";
 
-import logger from "redux-logger";
+// import logger from "redux-logger";
 
 import { rootReducer } from "./root-reducer";
 
-const middlewares = [logger]
+const loggerMiddleware = (store) => (next) => (action) =>{
+    if(!action.type){
+        return next(action)
+    }
+
+    next(action)
+}
+
+const middlewares = [loggerMiddleware]
 
 const composedEnhancers = compose(applyMiddleware(...middlewares))
 
