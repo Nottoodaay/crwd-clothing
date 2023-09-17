@@ -1,19 +1,24 @@
-import { compose, createStore, applyMiddleware } from "redux";
+import { compose, createStore, applyMiddleware } from 'redux';
+// import logger from 'redux-logger';
 
-// import logger from "redux-logger";
+import { rootReducer } from './root-reducer';
 
-import { rootReducer } from "./root-reducer";
+const loggerMiddleware = (store) => (next) => (action) => {
+  if (!action.type) { 
+    return next(action);
+  }
 
-const loggerMiddleware = (store) => (next) => (action) =>{
-    if(!action.type){
-        return next(action)
-    }
+  console.log('type: ', action.type);
+  console.log('payload: ', action.payload);
+  console.log('currentState: ', store.getState());
 
-    next(action)
-}
+  next(action);
 
-const middlewares = [loggerMiddleware]
+  console.log('next state: ', store.getState());
+};
 
-const composedEnhancers = compose(applyMiddleware(...middlewares))
+const middleWares = [loggerMiddleware];
 
-export const store  =  createStore(rootReducer, undefined, composedEnhancers)
+const composedEnhancers = compose(applyMiddleware(...middleWares));
+
+export const store = createStore(rootReducer, undefined, composedEnhancers);
